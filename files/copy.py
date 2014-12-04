@@ -25,7 +25,7 @@ DOCUMENTATION = '''
 ---
 module: copy
 version_added: "historical"
-short_description: Copies files to remote locations .
+short_description: リモートにファイルをコピーします。
 description:
      - The M(copy) module copies a file on the local box to remote locations. Use the M(fetch) module to copy files from remote locations to the local box.
 options:
@@ -210,7 +210,7 @@ def main():
                 # os.path.exists() can return false in some
                 # circumstances where the directory does not have
                 # the execute bit for the current user set, in
-                # which case the stat() call will raise an OSError 
+                # which case the stat() call will raise an OSError
                 os.stat(os.path.dirname(dest))
             except OSError, e:
                 if "permission denied" in str(e).lower():
