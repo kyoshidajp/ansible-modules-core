@@ -25,7 +25,7 @@ DOCUMENTATION = '''
 ---
 module: copy
 version_added: "historical"
-short_description: リモートにファイルをコピーします。
+short_description: リモートにファイルをコピーする
 description:
      - The M(copy) module copies a file on the local box to remote locations. Use the M(fetch) module to copy files from remote locations to the local box.
 options:
