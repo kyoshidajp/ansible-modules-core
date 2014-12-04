@@ -25,7 +25,7 @@ DOCUMENTATION = '''
 ---
 module: copy
 version_added: "historical"
-short_description: Copies files to remote locations.
+short_description: Copies files to remote locations .
 description:
      - The M(copy) module copies a file on the local box to remote locations. Use the M(fetch) module to copy files from remote locations to the local box.
 options:
