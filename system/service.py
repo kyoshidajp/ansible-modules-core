@@ -23,77 +23,65 @@ DOCUMENTATION = '''
 module: service
 author: Michael DeHaan
 version_added: "0.1"
-short_description:  Manage services.
+short_description:  サービスの管理を行う
 description:
-    - Controls services on remote hosts. Supported init systems include BSD init,
-      OpenRC, SysV, systemd, upstart.
+    - リモートホストのサービスを管理します。BSD init、OpenRC、SysV、systemd、upstart を含む init システムをサポートします。
 options:
     name:
         required: true
         description:
-        - Name of the service.
+        - サービスの名前です。
     state:
         required: false
         choices: [ started, stopped, restarted, reloaded ]
         description:
-          - C(started)/C(stopped) are idempotent actions that will not run
-            commands unless necessary.  C(restarted) will always bounce the
-            service.  C(reloaded) will always reload. B(At least one of state
-            and enabled are required.)
+          - C(started)/C(stopped) は必要性がなければ実行されない、べき等性を持つ動作です。C(restarted) 、C(reloaded) は常に実行されます。B(state と enabled のうち少なくとも一つは必要です。)
     sleep:
         required: false
         version_added: "1.3"
         description:
-        - If the service is being C(restarted) then sleep this many seconds
-          between the stop and start command. This helps to workaround badly
-          behaving init scripts that exit immediately after signaling a process
-          to stop.
+        - C(restarted) が指定されていれば、停止と起動コマンドの間にスリープさせる時間です。プロセス停止のシグナルを送った直後に exit してしまう init スクリプトのいけてない動作に対する回避策になります。
     pattern:
         required: false
         version_added: "0.7"
         description:
-        - If the service does not respond to the status command, name a
-          substring to look for as would be found in the output of the I(ps)
-          command as a stand-in for a status result.  If the string is found,
-          the service will be assumed to be running.
+        - サービスがステータスコードを返さない場合、起動確認のために I(ps) コマンドの実行結果から探す部分文字列です。文字列が見つかれば、サービスは起動していると推測します。
     enabled:
         required: false
         choices: [ "yes", "no" ]
         description:
-        - Whether the service should start on boot. B(At least one of state and
-          enabled are required.)
-
+        - マシンの起動時にサービスを起動するかどうかです。B(state と enabled のうち少なくとも一つは必要です。)
     runlevel:
         required: false
         default: 'default'
         description:
-        - "For OpenRC init scripts (ex: Gentoo) only.  The runlevel that this service belongs to."
+        - "OpenRC の init スクリプト（例: Gentoo）でのみ有効です。このサービスが該当するランレベルです。"
     arguments:
         description:
-        - Additional arguments provided on the command line
+        - コマンドラインで渡される追加の引数です。
         aliases: [ 'args' ]
 '''
 
 EXAMPLES = '''
-# Example action to start service httpd, if not running
+# httpd サービスが起動していなければ起動する例
 - service: name=httpd state=started
 
-# Example action to stop service httpd, if running
+# httpd サービスが実行中であれば停止する例
 - service: name=httpd state=stopped
 
-# Example action to restart service httpd, in all cases
+# httpd サービスをどんな場合でも再起動する例
 - service: name=httpd state=restarted
 
-# Example action to reload service httpd, in all cases
+# httpd サービスをどんな場合でも再読み込みする例
 - service: name=httpd state=reloaded
 
-# Example action to enable service httpd, and not touch the running state
+# httpd サービスを有効にして、Example action to enable service httpd, and not touch the running state
 - service: name=httpd enabled=yes
 
-# Example action to start service foo, based on running process /usr/bin/foo
+# /usr/bin/foo をベースにした foo サービスを起動する例
 - service: name=foo pattern=/usr/bin/foo state=started
 
-# Example action to restart network service for interface eth0
+# network サービスを eth0 インターフェースで再起動する例
 - service: name=network state=restarted args=eth0
 '''
 
