@@ -23,9 +23,9 @@ DOCUMENTATION = '''
 ---
 module: rpm_key
 author: Hector Acosta <hector.acosta@gazzang.com>
-short_description: Adds or removes a gpg key from the rpm db
+short_description: rpm db の pgp キーを追加または削除する
 description:
-    - Adds or removes (rpm --import) a gpg key to your rpm database.
+    - (rpm --import) した rpm データベースの gpg キーを追加または削除します。
 version_added: "1.3"
 options:
     key:
@@ -33,17 +33,16 @@ options:
       default: null
       aliases: []
       description:
-          - Key that will be modified. Can be a url, a file, or a keyid if the key already exists in the database.
+          - 修正対象のキーです。URL、ファイル、またはデータベース上に存在するキーIDである必要があります。
     state:
       required: false
       default: "present"
       choices: [present, absent]
       description:
-          - Wheather the key will be imported or removed from the rpm db.
+          - キーを rpm db にインポートする、または削除を行うかのどちらかを指定します。
     validate_certs:
       description:
-          - If C(no) and the C(key) is a url starting with https, SSL certificates will not be validated. This should only be used
-            on personally controlled sites using self-signed certificates.
+          - C(no) で、C(key) が https で始まる url の場合、SSL 証明書は検査されません。自己証明書を使った個人的に管理するサイトでのみ仕様すべきです。
       required: false
       default: 'yes'
       choices: ['yes', 'no']
@@ -51,13 +50,13 @@ options:
 '''
 
 EXAMPLES = '''
-# Example action to import a key from a url
+# URL からキーをインポートする例
 - rpm_key: state=present key=http://apt.sw.be/RPM-GPG-KEY.dag.txt
 
-# Example action to import a key from a file
+# ファイルからキーをインポートする例
 - rpm_key: state=present key=/path/to/key.gpg
 
-# Example action to ensure a key is not present in the db
+# データベース上にキーが存在しない事を保証する例
 - rpm_key: state=absent key=DEADB33F
 '''
 import syslog
