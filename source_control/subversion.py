@@ -21,46 +21,46 @@
 DOCUMENTATION = '''
 ---
 module: subversion
-short_description: Deploys a subversion repository.
+short_description: subversion リポジトリをデプロイする
 description:
-   - Deploy given repository URL / revision to dest. If dest exists, update to the specified revision, otherwise perform a checkout.
+   - リポジトリ URL の / リビジョンをデプロイします。デプロイ先が存在すれば特定のリビジョンにアップデートし、そうでなければチェックアウトを行います。
 version_added: "0.7"
 author: Dane Summers, njharman@gmail.com
 notes:
-   - Requires I(svn) to be installed on the client.
+   - I(svn) クライアントには I(svn) がインストールされている必要があります。
 requirements: []
 options:
   repo:
     description:
-      - The subversion URL to the repository.
+      - リポジトリの subversion URL です。
     required: true
     aliases: [ name, repository ]
     default: null
   dest:
     description:
-      - Absolute path where the repository should be deployed.
+      - デプロイ先のリポジトリパスです。
     required: true
     default: null
   revision:
     description:
-      - Specific revision to checkout.
+      - チェックアウトするリビジョンです。
     required: false
     default: HEAD
     aliases: [ version ]
   force:
     description:
-      - If C(yes), modified files will be discarded. If C(no), module will fail if it encounters modified files.
+      - C(yes) の場合、変更されたファイルは破棄されます。C(no) の場合、変更されたファイルがあればモジュールは失敗します。
     required: false
     default: "yes"
     choices: [ "yes", "no" ]
   username:
     description:
-      - --username parameter passed to svn.
+      - svn の --username パラメータです。
     required: false
     default: null
   password:
     description:
-      - --password parameter passed to svn.
+      - svn の --password パラメータです。
     required: false
     default: null
   executable:
@@ -68,22 +68,21 @@ options:
     default: null
     version_added: "1.4"
     description:
-      - Path to svn executable to use. If not supplied,
-        the normal mechanism for resolving binary paths will be used.
+      - svn の実行パスです。指定されていない場合、マシンの通常のパスになります。
   export:
     required: false
     default: "no"
     choices: [ "yes", "no" ]
     version_added: "1.6"
     description:
-      - If C(yes), do export instead of checkout/update.
+      - C(yes) であれば、チェックアウト・アップデートの代わりにエクスポートします。
 '''
 
 EXAMPLES = '''
-# Checkout subversion repository to specified folder.
+# フォルダに subversion リポジトリをチェックアウトする
 - subversion: repo=svn+ssh://an.example.org/path/to/repo dest=/src/checkout
 
-# Export subversion directory to folder
+# フォルダに subversion ディレクトリをエクスポートする
 - subversion: repo=svn+ssh://an.example.org/path/to/repo dest=/src/export export=True
 '''
 
@@ -120,7 +119,7 @@ class Subversion(object):
     def checkout(self):
         '''Creates new svn working directory if it does not already exist.'''
         self._exec(["checkout", "-r", self.revision, self.repo, self.dest])
-		
+
     def export(self, force=False):
         '''Export svn repo to directory'''
         self._exec(["export", "-r", self.revision, self.repo, self.dest])
