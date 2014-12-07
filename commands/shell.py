@@ -45,9 +45,7 @@ options:
     default: True
     version_added: "1.8"
 notes:
-   - コマンドを安全で予想通りの実行とするために、代わりに M(command) モジュールを使用した方がよいかもしれません。Best practices when writing
-   playbooks will follow the trend of using M(command) unless M(shell) is
-   explicitly required. アドホックコマンドを実行する際は、自分にとってベストな方法を判断して使用してください。
+   - コマンドを安全で予想通りの実行とするために、代わりに M(command) モジュールを使用した方がよいかもしれません。Best practices when writing playbooks will follow the trend of using M(command) unless M(shell) is explicitly required. アドホックコマンドを実行する際は、自分にとってベストな方法を判断して使用してください。
    - shell モジュールの変数をサニタイズするには、"{{ var }}" の代わりに "{{ var | quote }}" を使って、セミコロンのような値を無視するようにします。
 
 requirements: [ ]
