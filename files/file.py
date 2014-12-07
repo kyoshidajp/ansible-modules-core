@@ -32,34 +32,28 @@ DOCUMENTATION = '''
 ---
 module: file
 version_added: "historical"
-short_description: Sets attributes of files
+short_description: ファイルの属性を設定する
 extends_documentation_fragment: files
-description: 
-     - Sets attributes of files, symlinks, and directories, or removes
-       files/symlinks/directories. Many other modules support the same options as
-       the M(file) module - including M(copy), M(template), and M(assemble).
+description:
+     - ファイル、シンボリックリンク、ディレクトリの属性を設定したり、それらを削除します。M(copy)、 M(template) や M(assemble) を含む他の多くのモジュールは M(file) モジュールと同じオプションをサポートします。
 notes:
-    - See also M(copy), M(template), M(assemble)
+    - M(copy)、M(template)、M(assemble) も参照してください。
 requirements: [ ]
 author: Michael DeHaan
 options:
   path:
     description:
-      - 'path to the file being managed.  Aliases: I(dest), I(name)'
+      - '対象ファイルのパスです。エイリアス: I(dest), I(name)'
     required: true
     default: []
-    aliases: ['dest', 'name'] 
+    aliases: ['dest', 'name']
   state:
     description:
-      - If C(directory), all immediate subdirectories will be created if they
-        do not exist, since 1.7 they will be created with the supplied permissions.
-        If C(file), the file will NOT be created if it does not exist, see the M(copy)
-        or M(template) module if you want that behavior.  If C(link), the symbolic
-        link will be created or changed. Use C(hard) for hardlinks. If C(absent),
-        directories will be recursively deleted, and files or symlinks will be unlinked.
-        If C(touch) (new in 1.4), an empty file will be created if the c(path) does not
-        exist, while an existing file or directory will receive updated file access and
-        modification times (similar to the way `touch` works from the command line).
+      - C(directory) 指定したディレクトリが存在しない場合にサブディレクトリが作成されます。1.7 からパーミッションの指定が可能になりました。
+        C(file) 指定したファイルが存在しない場合には作成されません。代わりに M(copy) または M(template) モジュールを使用してください。
+        C(link) シンボリックリンクを作成または変更します。C(hard) はハードリンクになります。
+        C(absent) ディレクトリ、ファイル、シンボリックリンクを削除します。
+        C(touch) (1.4 で追加) c(path) が存在しない場合に空のファイルを作成します。ファイルまたはディレクトリが存在すればアクセスタイムスタンプと修正タイムスタンプを更新します。（`touch` コマンドに似ています）
     required: false
     default: file
     choices: [ file, link, directory, hard, touch, absent ]
@@ -68,23 +62,20 @@ options:
     default: null
     choices: []
     description:
-      - path of the file to link to (applies only to C(state=link)). Will accept absolute,
-        relative and nonexisting paths. Relative paths are not expanded.
+      - リンクする元のファイルのパスです（C(state=link) のみ）。絶対パスのみで相対パスは指定できません。
   recurse:
     required: false
     default: "no"
     choices: [ "yes", "no" ]
     version_added: "1.1"
     description:
-      - recursively set the specified file attributes (applies only to state=directory)
+      - 再帰的にファイルの属性を設定するかを指定します（state=directory の場合のみ）。
   force:
     required: false
     default: "no"
     choices: [ "yes", "no" ]
     description:
-      - 'force the creation of the symlinks in two cases: the source file does 
-        not exist (but will appear later); the destination exists and is a file (so, we need to unlink the
-        "path" file and create symlink to the "src" file in place of it).'
+      - '次の2つのケースでシンボリックリンクを強制的に作成: シンボリックリンクする元のファイルが存在しない（あとで作成する場合）。シンボリック先のファイルが存在する（"path" で指定したファイルのリンクを削除し、"src" で指定したファイルへのシンボリックリンクを作成する）'
 '''
 
 EXAMPLES = '''
@@ -95,10 +86,10 @@ EXAMPLES = '''
     - { path: 'x', dest: 'y' }
     - { path: 'z', dest: 'k' }
 
-# touch a file, using symbolic modes to set the permissions (equivalent to 0644)
+# symbolic モードでアクセス権(0644)を指定してファイルを作成する
 - file: path=/etc/foo.conf state=touch mode="u=rw,g=r,o=r"
 
-# touch the same file, but add/remove some permissions
+# ファイルを作成するが、パーミッションを追加・削除する
 - file: path=/etc/foo.conf state=touch mode="u+rw,g-wx,o-rwx"
 
 '''
@@ -357,4 +348,3 @@ def main():
 # import module snippets
 from ansible.module_utils.basic import *
 main()
-
