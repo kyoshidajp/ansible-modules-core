@@ -91,7 +91,7 @@ EXAMPLES = '''
 # "ntp.conf" ファイルをバックアップしてコピー
 - copy: src=/mine/ntp.conf dest=/etc/ntp.conf owner=root group=root mode=644 backup=yes
 
-# "sudoers" ファイルを visudo でバリデーションしてからコピー
+# "sudoers" ファイルを visudo で検査してからコピー
 - copy: src=/mine/sudoers dest=/etc/sudoers validate='visudo -cf %s'
 '''
 
