@@ -27,43 +27,35 @@ module: copy
 version_added: "historical"
 short_description: リモートにファイルをコピーする
 description:
-     - M(copy) モジュールはローカルのファイルをリモートにコピーします。 Use the M(fetch) module to copy files from remote locations to the local box.
+     - M(copy) モジュールはローカルのファイルをリモートにコピーします。リモートからローカルへファイルをコピーするには M(fetch) モジュールを使用します。
 options:
   src:
     description:
-      - Local path to a file to copy to the remote server; can be absolute or relative.
-        If path is a directory, it is copied recursively. In this case, if path ends
-        with "/", only inside contents of that directory are copied to destination.
-        Otherwise, if it does not end with "/", the directory itself with all contents
-        is copied. This behavior is similar to Rsync.
+      - リモートへコピーするファイルのローカルパスで、相対または絶対パスで指定します。パスがディレクトリであれば、再帰的にコピーされます。この場合、パスは "/" で終わり、ディレクトリの中身が転送されます。"/" で終わっていない場合、ディレクトリ自体がその内容とともにコピーされます。この動作は Rsync に似ています。
     required: false
     default: null
     aliases: []
   content:
     version_added: "1.1"
     description:
-      - When used instead of 'src', sets the contents of a file directly to the specified value.
+      - src の代わりに使用することで、ファイルディレクトリの内容を記述した値に設定します。
     required: false
     default: null
   dest:
     description:
-      - Remote absolute path where the file should be copied to. If src is a directory,
-        this must be a directory too.
+      - リモートのファイルコピー先の絶対パスです。src がディレクトリであればディレクトリである必要があります。
     required: true
     default: null
   backup:
     description:
-      - Create a backup file including the timestamp information so you can get
-        the original file back if you somehow clobbered it incorrectly.
+      - タイムスタンプ付きのバックアップファイルを作成します。この元ファイルからなんとかしてファイルを元に戻す事ができます。
     version_added: "0.7"
     required: false
     choices: [ "yes", "no" ]
     default: "no"
   force:
     description:
-      - the default is C(yes), which will replace the remote file when contents
-        are different than the source.  If C(no), the file will only be transferred
-        if the destination does not exist.
+      - デフォルトは C(yes) で、コピー対象の内容が異なる場合に置き換えます。C(no) はコピー先に存在しない場合にのみコピーします。
     version_added: "1.1"
     required: false
     choices: [ "yes", "no" ]
@@ -71,40 +63,35 @@ options:
     aliases: [ "thirsty" ]
   validate:
     description:
-      - The validation command to run before copying into place.  The path to the file to
-        validate is passed in via '%s' which must be present as in the visudo example below.
-        The command is passed securely so shell features like expansion and pipes won't work.
+      - コピーを行う前に実行される検証コマンドです。検証を行うファイルへのパスは下の visudo の例のように '%s' を経由して検証するファイルのパスになります。コマンドは拡張のような機能があり、パイプは動作せず、セキュアです。
     required: false
     default: ""
     version_added: "1.2"
   directory_mode:
     description:
-      - When doing a recursive copy set the mode for the directories. If this is not set we will use the system
-        defaults. The mode is only set on directories which are newly created, and will not affect those that
-        already existed.
+      - ディレクトリを再帰的にコピーする場合に使用します。このモードは新規に作成されたディレクトリにのみ設定され、すでに存在する場合は影響をあたえません。
     required: false
     version_added: "1.5"
 extends_documentation_fragment: files
 author: Michael DeHaan
 notes:
-   - The "copy" module recursively copy facility does not scale to lots (>hundreds) of files.
-     For alternative, see synchronize module, which is a wrapper around rsync.
+   - copy モジュールの再帰的コピーは（100よりも）たくさんのファイルではスケールしません。選択肢として、rsync をラップした synchronize モジュールも検討してください。
 '''
 
 EXAMPLES = '''
-# Example from Ansible Playbooks
+# Ansible Playbooks の例
 - copy: src=/srv/myfiles/foo.conf dest=/etc/foo.conf owner=foo group=foo mode=0644
 
-# The same example as above, but using a symbolic mode equivalent to 0644
+# 上の例と同じですが、シンボリックモードで 0644 を指定
 - copy: src=/srv/myfiles/foo.conf dest=/etc/foo.conf owner=foo group=foo mode="u=rw,g=r,o=r"
 
-# Another symbolic mode example, adding some permissions and removing others
+# 別のシンボリックモードの例で、パーミッションを一部変更
 - copy: src=/srv/myfiles/foo.conf dest=/etc/foo.conf owner=foo group=foo mode="u+rw,g-wx,o-rwx"
 
-# Copy a new "ntp.conf file into place, backing up the original if it differs from the copied version
+# "ntp.conf" ファイルをバックアップしてコピー
 - copy: src=/mine/ntp.conf dest=/etc/ntp.conf owner=root group=root mode=644 backup=yes
 
-# Copy a new "sudoers" file into place, after passing validation with visudo
+# "sudoers" ファイルを visudo でバリデーションしてからコピー
 - copy: src=/mine/sudoers dest=/etc/sudoers validate='visudo -cf %s'
 '''
 
