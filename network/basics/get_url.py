@@ -28,41 +28,27 @@ import tempfile
 DOCUMENTATION = '''
 ---
 module: get_url
-short_description: Downloads files from HTTP, HTTPS, or FTP to node
+short_description: HTTP、HTTPS、FTP でファイルをリモートにダウンロードする
 description:
-     - Downloads files from HTTP, HTTPS, or FTP to the remote server. The remote
-       server I(must) have direct access to the remote resource.
-     - By default, if an environment variable C(<protocol>_proxy) is set on
-       the target host, requests will be sent through that proxy. This
-       behaviour can be overridden by setting a variable for this task
-       (see `setting the environment
-       <http://docs.ansible.com/playbooks_environment.html>`_),
-       or by using the use_proxy option.
+     - HTTP、HTTPS、FTP でファイルをリモートにダウンロードします。リモートサーバはリモートのリソースに直接アクセス出来る必要があります。
+     - デフォルトで、環境変数 C(<protocol>_proxy) がターゲットホストに設定されていれば、プロキシ経由でリクエストが送られます。この動作はタスクの設定(参照 `環境設定<http://docs.ansible.com/playbooks_environment.html>`_)または use_proxy オプションによって上書きされる可能性があります。
 version_added: "0.6"
 options:
   url:
     description:
-      - HTTP, HTTPS, or FTP URL in the form (http|https|ftp)://[user[:pass]]@host.domain[:port]/path
+      - HTTP、HTTPS、FTP の URL です。 (http|https|ftp)://[user[:pass]]@host.domain[:port]/path
     required: true
     default: null
     aliases: []
   dest:
     description:
-      - absolute path of where to download the file to.
-      - If C(dest) is a directory, either the server provided filename or, if
-        none provided, the base name of the URL on the remote server will be
-        used. If a directory, C(force) has no effect.
-        If C(dest) is a directory, the file will always be
-        downloaded (regardless of the force option), but replaced only if the contents changed.
+      - ダウンロード先の絶対パスです。
+      - C(dest) がディレクトリであれば、サーバはファイル名を提供するか、提供されない場合はリモートサーバの URL のベース名が使用されます。ディレクトリであれば、C(force) は影響をあたえません。C(dest) がディレクトリであれば、ファイルは常にダウンロードされますが、内容が変更されている場合のみ置き換えられます。
     required: true
     default: null
   force:
     description:
-      - If C(yes) and C(dest) is not a directory, will download the file every
-        time and replace the file if the contents change. If C(no), the file
-        will only be downloaded if the destination does not exist. Generally
-        should be C(yes) only for small local files. Prior to 0.6, this module
-        behaved as if C(yes) was the default.
+      - C(yes) が指定され、C(dest) がディレクトリでない場合、ファイルは毎回ダウンロードされて、内容が変更されていればそれに置き換えられます。C(no) が指定された場合、コピー先にファイルが存在しない場合にのみダウンロードされます。一般的に C(yes) は小さいローカルファイルにのみ指定されます。0.6 以降では C(yes) がデフォルトになりました。
     version_added: "0.7"
     required: false
     choices: [ "yes", "no" ]
@@ -70,60 +56,54 @@ options:
     aliases: [ "thirsty" ]
   sha256sum:
     description:
-      - If a SHA-256 checksum is passed to this parameter, the digest of the
-        destination file will be calculated after it is downloaded to ensure
-        its integrity and verify that the transfer completed successfully.
+      - ダウンロードが完全に成功したかを保証するため、ダウンロードしたあとにダイジェストを算出します。
     version_added: "1.3"
     required: false
     default: null
   use_proxy:
     description:
-      - if C(no), it will not use a proxy, even if one is defined in
-        an environment variable on the target hosts.
+      - C(no) が指定されているとターゲットホストに環境変数が設定されていてもプロキシを使用しません。
     required: false
     default: 'yes'
     choices: ['yes', 'no']
   validate_certs:
     description:
-      - If C(no), SSL certificates will not be validated. This should only be used
-        on personally controlled sites using self-signed certificates.
+      - C(no) の場合、SSL 証明書が検査されません。自己証明書を使用している個人的なサイトでのみ仕様すべきです。
     required: false
     default: 'yes'
     choices: ['yes', 'no']
   timeout:
     description:
-      - Timeout for URL request
+      - URL リクエストのタイムアウト時間です。
     required: false
     default: 10
     version_added: '1.8'
   url_username:
     description:
-      - The username for use in HTTP basic authentication. This parameter can be used
-        without C(url_password) for sites that allow empty passwords.
+      - HTTP ベーシック認証で使用されるユーザ名です。パスワードなしのサイト向けに C(url_password) の指定なしで使用できます。
     required: false
     version_added: '1.6'
   url_password:
     description:
-      - The password for use in HTTP basic authentication. If the C(url_username)
-        parameter is not specified, the C(url_password) parameter will not be used.
+      - HTTP ベーシック認証で使用されるパスワードです。C(url_username) が指定されていないと、C(url_password) は使用されません。
     required: false
     version_added: '1.6'
   others:
     description:
-      - all arguments accepted by the M(file) module also work here
+      - すべての引数は M(file) モジュールによって許可されます。
     required: false
 notes:
-    - This module doesn't yet support configuration for proxies.
-# informational: requirements for nodes
-requirements: [ urllib2, urlparse ]
+    - プロキシの設定はまだサポートされていません。
+# 情報提供: ノードに必要なモジュール
+必須: [ urllib2, urlparse ]
 author: Jan-Piet Mens
 '''
 
 EXAMPLES='''
-- name: download foo.conf
+- name: foo.conf をダウンロード
   get_url: url=http://example.com/path/file.conf dest=/etc/foo.conf mode=0440
 
-- name: download file with sha256 check
+- name: ダウンロードして sha256 でチェック
   get_url: url=http://example.com/path/file.conf dest=/etc/foo.conf sha256sum=b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c
 '''
 
