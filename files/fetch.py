@@ -3,41 +3,33 @@
 DOCUMENTATION = '''
 ---
 module: fetch
-short_description: Fetches a file from remote nodes
+short_description: リモートからファイルを取得する
 description:
-     - This module works like M(copy), but in reverse. It is used for fetching
-       files from remote machines and storing them locally in a file tree,
-       organized by hostname. Note that this module is written to transfer
-       log files that might not be present, so a missing remote file won't
-       be an error unless fail_on_missing is set to 'yes'.
+     - このモジュールは M(copy) の様に動作しますがその逆になります。リモートマシンからファイルを取得し、ローカルのファイルツリーにホスト名付きで保存されます。このモジュールはログファイルの転送のためにあり、リモートの対象ファイルが存在せず fail_on_missing が 'yes' でなければエラーになる事に注意してください。
 version_added: "0.2"
 options:
   src:
     description:
-      - The file on the remote system to fetch. This I(must) be a file, not a
-        directory. Recursive fetching may be supported in a later release.
+      - 取得するリモートシステムのファイルです。これはディレクトリではなくファイルでI(なければなりません)。再帰的な取得は将来サポートされるでしょう。
     required: true
     default: null
     aliases: []
   dest:
     description:
-      - A directory to save the file into. For example, if the I(dest)
-        directory is C(/backup) a I(src) file named C(/etc/profile) on host
-        C(host.example.com), would be saved into
-        C(/backup/host.example.com/etc/profile)
+      - 取得したファイルを保存するディレクトリです。例えば、I(dest) ディレクトリが  C(/backup) で、ホスト C(host.example.com) の I(src) が C(/etc/profile) であれば、C(/backup/host.example.com/etc/profile) に保存されます。
     required: true
     default: null
   fail_on_missing:
     version_added: "1.1"
     description:
-      - Makes it fails when the source file is missing.
+      - ソースファイルが存在しない場合に失敗にします。
     required: false
     choices: [ "yes", "no" ]
     default: "no"
   validate_checksum:
     version_added: "1.4"
     description:
-      - Verify that the source and destination checksums match after the files are fetched.
+      - ファイルを取得したあとで、チェックサムが同じかチェックします。
     required: false
     choices: [ "yes", "no" ]
     default: "yes"
@@ -46,23 +38,21 @@ options:
     version_added: "1.2"
     description:
       Allows you to override the default behavior of prepending hostname/path/to/file to
-      the destination.  If dest ends with '/', it will use the basename of the source
-      file, similar to the copy module.  Obviously this is only handy if the filenames
-      are unique.
+      the destination. dest が '/' で終われば、copy モジュールに似て、コピー元ファイルの basename になります。当然ファイル名がユニークであれば便利です。
 requirements: []
 author: Michael DeHaan
 '''
 
 EXAMPLES = '''
-# Store file into /tmp/fetched/host.example.com/tmp/somefile
+# ファイルを /tmp/fetched/host.example.com/tmp/somefile に保存
 - fetch: src=/tmp/somefile dest=/tmp/fetched
 
-# Specifying a path directly
+# 保存先のパスを指定
 - fetch: src=/tmp/somefile dest=/tmp/prefix-{{ ansible_hostname }} flat=yes
 
-# Specifying a destination path
+# 保存先のパスを指定
 - fetch: src=/tmp/uniquefile dest=/tmp/special/ flat=yes
 
-# Storing in a path relative to the playbook
+# playbook からの相対パスに保存
 - fetch: src=/tmp/uniquefile dest=special/prefix-{{ ansible_hostname }} flat=yes
 '''
