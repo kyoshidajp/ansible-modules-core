@@ -23,11 +23,9 @@ DOCUMENTATION = '''
 ---
 module: ping
 version_added: historical
-short_description: Try to connect to host and return C(pong) on success.
+short_description: ホストに接続を試みて、成功すれば C(pong) を返す
 description:
-   - A trivial test module, this module always returns C(pong) on successful
-     contact. It does not make sense in playbooks, but it is useful from
-     C(/usr/bin/ansible)
+   - 簡単なテストモジュールで、接続に成功すれば常に C(pong) を返します。playbooks では意味がありませんが、C(/usr/bin/ansible) では有意義です。
 options: {}
 author: Michael DeHaan
 '''
@@ -56,4 +54,3 @@ def main():
 from ansible.module_utils.basic import *
 
 main()
-
