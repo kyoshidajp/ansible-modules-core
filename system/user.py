@@ -23,173 +23,154 @@ DOCUMENTATION = '''
 module: user
 author: Stephen Fromm
 version_added: "0.2"
-short_description: Manage user accounts
+short_description: ユーザアカウントを管理する
 requirements: [ useradd, userdel, usermod ]
 description:
-    - Manage user accounts and user attributes.
+    - ユーザアカウントとユーザ属性を管理ます。
 options:
     name:
         required: true
         aliases: [ "user" ]
         description:
-            - Name of the user to create, remove or modify.
+            - 作成、削除、または変更するユーザの名前です。
     comment:
         required: false
         description:
-            - Optionally sets the description (aka I(GECOS)) of user account.
+            - ユーザのメモ(別名 I(GECOS))です。
     uid:
         required: false
         description:
-            - Optionally sets the I(UID) of the user.
+            - ユーザの I(UID) です。
     non_unique:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - Optionally when used with the -u option, this option allows to
-              change the user ID to a non-unique value.
+            - -u オプションと一緒に使われるとユーザ ID をユニークではない値に変更する事を許可します。
         version_added: "1.1"
     group:
         required: false
         description:
-            - Optionally sets the user's primary group (takes a group name).
+            - ユーザのプライマリグループです。
     groups:
         required: false
         description:
-            - Puts the user in this comma-delimited list of groups. When set to
-              the empty string ('groups='), the user is removed from all groups
-              except the primary group.
+            - カンマ区切りのグループを指定します。空文字列('groups=')を指定すると、プライマリグループを除くすべてのグループからユーザが削除されます。
     append:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - If C(yes), will only add groups, not set them to just the list
-              in I(groups).
+            - C(yes) の場合、グループに追加され、I(groups) には追加されません。
     shell:
         required: false
         description:
-            - Optionally set the user's shell.
+            - ユーザのシェルです。
     home:
         required: false
         description:
-            - Optionally set the user's home directory.
+            - ユーザのホームディレクトリです。
     password:
         required: false
         description:
-            - Optionally set the user's password to this crypted value.  See
-              the user example in the github examples directory for what this looks
-              like in a playbook. The `FAQ <http://docs.ansible.com/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module>`_
-              contains details on various ways to generate these password values.
+            - 暗号化ユーザのパスワードです。github の examples ディレクトリにある user example を参照してください。`FAQ <http://docs.ansible.com/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module>`_
+              にはパスワードを生成する様々な方法の詳細があります。
     state:
         required: false
         default: "present"
         choices: [ present, absent ]
         description:
-            - Whether the account should exist.  When C(absent), removes
-              the user account.
+            - アカウントが存在すべきかです。C(absent) が指定されるとユーザアカウントは削除されます。
     createhome:
         required: false
         default: "yes"
         choices: [ "yes", "no" ]
         description:
-            - Unless set to C(no), a home directory will be made for the user
-              when the account is created or if the home directory does not
-              exist. 
+            - C(no) でなければユーザが作成された時か、あるいはホームディレクトリが存在しない場合にホームディレクトリを作成します。
     move_home:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - If set to C(yes) when used with C(home=), attempt to move the
-              user's home directory to the specified directory if it isn't there
-              already.
+            - C(home=) と一緒に C(yes) を指定すると、ユーザのホームディレクトリを指定された場所に移動します。ただし、移動先のディレクトリが存在しない場合です。
     system:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - When creating an account, setting this to C(yes) makes the user a
-              system account.  This setting cannot be changed on existing users.
+            - アカウントを作成する際に、C(yes) はユーザをシステムアカウントで作成します。既存のユーザには変更されません。
     force:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - When used with C(state=absent), behavior is as with
-              C(userdel --force).
+            - C(state=absent) と一緒に指定すると、C(userdel --force) と同様の動作となります。
     login_class:
         required: false
         description:
-            - Optionally sets the user's login class for FreeBSD, OpenBSD and NetBSD systems.
+            - FreeBSD、OpenBSD、NetBSD システムのユーザのログインクラスです。
     remove:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - When used with C(state=absent), behavior is as with
-              C(userdel --remove).
+            - C(state=absent) と一緒に指定されると C(userdel --remove) と同様の動作になります。
     generate_ssh_key:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         version_added: "0.9"
         description:
-            - Whether to generate a SSH key for the user in question.
-              This will B(not) overwrite an existing SSH key.
+            - ユーザの SSH キーを作成するかどうかです。すでに SSH キーが存在すれば上書きは行いま B(せん)。
     ssh_key_bits:
         required: false
         default: 2048
         version_added: "0.9"
         description:
-            - Optionally specify number of bits in SSH key to create.
+            - 生成する SSH キーのビット数です。
     ssh_key_type:
         required: false
         default: rsa
         version_added: "0.9"
         description:
-            - Optionally specify the type of SSH key to generate. 
-              Available SSH key types will depend on implementation
-              present on target host.
+            - 生成する SSH キーの種類です。有効な SSH キーの種類はターゲットホストに依存します。
     ssh_key_file:
         required: false
         default: $HOME/.ssh/id_rsa
         version_added: "0.9"
         description:
-            - Optionally specify the SSH key filename.
+            - SSH キーのファイル名です。
     ssh_key_comment:
         required: false
         default: ansible-generated
         version_added: "0.9"
         description:
-            - Optionally define the comment for the SSH key.
+            - SSH キーのコメントです。
     ssh_key_passphrase:
         required: false
         version_added: "0.9"
         description:
-            - Set a passphrase for the SSH key.  If no
-              passphrase is provided, the SSH key will default to
-              having no passphrase.
+            - SSH キーのパスフレーズです。パスフレーズなしであれば、SSH キーはパスフレーズがありません。
     update_password:
         required: false
         default: always
         choices: ['always', 'on_create']
         version_added: "1.3"
         description:
-            - C(always) will update passwords if they differ.  C(on_create) will only set the password for newly created users.
+            - C(always) の場合、異なっていればパスワードを更新します。C(on_create) の場合、ユーザが新規に作成された時のみパスワードを設定します。
 '''
 
 EXAMPLES = '''
-# Add the user 'johnd' with a specific uid and a primary group of 'admin'
+# ユーザ 'johnd' を uid とプライマリグループ 'admin' を指定して追加する
 - user: name=johnd comment="John Doe" uid=1040 group=admin
 
-# Add the user 'james' with a bash shell, appending the group 'admins' and 'developers' to the user's groups
+# ユーザ 'james' を bash シェル、'admins' と 'developers' グループを指定して追加する
 - user: name=james shell=/bin/bash groups=admins,developers append=yes
 
-# Remove the user 'johnd'
+# ユーザ 'hond' を削除する
 - user: name=johnd state=absent remove=yes
 
-# Create a 2048-bit SSH key for user jsmith
+# ユーザ jsmith の 2048ビットの SSH キーを作成する
 - user: name=jsmith generate_ssh_key=yes ssh_key_bits=2048
 '''
 
@@ -296,8 +277,8 @@ class User(object):
             cmd.append(self.group)
         elif self.group_exists(self.name):
             # use the -N option (no user group) if a group already
-            # exists with the same name as the user to prevent 
-            # errors from useradd trying to create a group when 
+            # exists with the same name as the user to prevent
+            # errors from useradd trying to create a group when
             # USERGROUPS_ENAB is set in /etc/login.defs.
             if os.path.exists('/etc/redhat-release'):
                 dist = platform.dist()
@@ -534,7 +515,7 @@ class User(object):
         if not os.path.exists(info[5]):
             return (1, '', 'User %s home directory does not exist' % self.name)
         ssh_key_file = self.get_ssh_key_path()
-        ssh_dir = os.path.dirname(ssh_key_file) 
+        ssh_dir = os.path.dirname(ssh_key_file)
         if not os.path.exists(ssh_dir):
             try:
                 os.mkdir(ssh_dir, 0700)
@@ -623,7 +604,7 @@ class User(object):
                     os.chown(os.path.join(root, f), uid, gid)
         except OSError, e:
             self.module.exit_json(failed=True, msg="%s" % e)
-           
+
 
 # ===========================================
 
@@ -712,7 +693,7 @@ class FreeBsdUser(User):
                 self.module.get_bin_path('chpass', True),
                 '-p',
                 self.password,
-                self.name 
+                self.name
             ]
             return self.execute_command(cmd)
 
@@ -723,7 +704,7 @@ class FreeBsdUser(User):
             self.module.get_bin_path('pw', True),
             'usermod',
             '-n',
-            self.name 
+            self.name
         ]
         cmd_len = len(cmd)
         info = self.user_info()
@@ -798,7 +779,7 @@ class FreeBsdUser(User):
                 self.module.get_bin_path('chpass', True),
                 '-p',
                 self.password,
-                self.name 
+                self.name
             ]
             return self.execute_command(cmd)
 
@@ -1129,7 +1110,7 @@ class SunOS(User):
     """
     This is a SunOS User manipulation class - The main difference between
     this class and the generic user class is that Solaris-type distros
-    don't support the concept of a "system" account and we need to 
+    don't support the concept of a "system" account and we need to
     edit the /etc/shadow file manually to set a password. (Ugh)
 
     This overrides the following methods from the generic class:-
@@ -1195,7 +1176,7 @@ class SunOS(User):
             if rc is not None and rc != 0:
                 self.module.fail_json(name=self.name, msg=err, rc=rc)
 
-            # we have to set the password by editing the /etc/shadow file 
+            # we have to set the password by editing the /etc/shadow file
             if self.password is not None:
                 try:
                     lines = []
@@ -1282,7 +1263,7 @@ class SunOS(User):
             else:
                 (rc, out, err) = (None, '', '')
 
-            # we have to set the password by editing the /etc/shadow file 
+            # we have to set the password by editing the /etc/shadow file
             if self.update_password == 'always' and self.password is not None and info[1] != self.password:
                 try:
                     lines = []
@@ -1292,7 +1273,7 @@ class SunOS(User):
                             lines.append(line)
                             continue
                         fields[1] = self.password
-                        fields[2] = str(int(time.time() / 86400))	
+                        fields[2] = str(int(time.time() / 86400))
                         line = ':'.join(fields)
                         lines.append('%s\n' % line)
                     open(self.SHADOWFILE, 'w+').writelines(lines)
