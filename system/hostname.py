@@ -23,16 +23,16 @@ DOCUMENTATION = '''
 module: hostname
 author: Hiroaki Nakamura
 version_added: "1.4"
-short_description: Manage hostname
+short_description: ホスト名を管理する
 requirements: [ hostname ]
 description:
-    - Set system's hostname
-    - Currently implemented on Debian, Ubuntu, Fedora, RedHat, openSUSE, Linaro, ScientificLinux, Arch, CentOS, AMI.
+    - システムのホスト名を設定します。
+    - 現在 Debian、Ubuntu、Fedora、RedHat、openSUSE、Linaro、ScientificLinux、Arch、CentOS、AMI で実装されています。
 options:
     name:
         required: true
         description:
-            - Name of the host
+            - ホスト名
 '''
 
 EXAMPLES = '''
