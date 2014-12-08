@@ -22,54 +22,54 @@
 DOCUMENTATION = '''
 ---
 module: gem
-short_description: Manage Ruby gems
+short_description: Ruby gem を管理する
 description:
-  - Manage installation and uninstallation of Ruby gems.
+  - Ruby gem のインストール、アンインストールを管理します。
 version_added: "1.1"
 options:
   name:
     description:
-      - The name of the gem to be managed.
+      - 管理する gem の名前です。
     required: true
   state:
     description:
-      - The desired state of the gem. C(latest) ensures that the latest version is installed.
+      - gem の状態です。C(latest) は最新バージョンのインストールになります。
     required: false
     choices: [present, absent, latest]
     default: present
   gem_source:
     description:
-      - The path to a local gem used as installation source.
+      - インストールのソースとして使用するローカル gem のパスです。
     required: false
   include_dependencies:
     description:
-      - Whether to include dependencies or not.
+      - 依存関係を含める、または含めないかです。
     required: false
     choices: [ "yes", "no" ]
     default: "yes"
   repository:
     description:
-      - The repository from which the gem will be installed
+      - インストールする gem のリポジトリです。
     required: false
     aliases: [source]
   user_install:
     description:
-      - Install gem in user's local gems cache or for all users
+      - ユーザのローカル gem キャッシュまたは全ユーザから gem をインストールします。
     required: false
     default: "yes"
     version_added: "1.3"
   executable:
     description:
-    - Override the path to the gem executable
+    - gem を実行するパスを上書きします。
     required: false
     version_added: "1.4"
   version:
     description:
-      - Version of the gem to be installed/removed.
+      - インストールまたは削除する gem のバージョンです。
     required: false
   pre_release:
     description:
-      - Allow installation of pre-release versions of the gem.
+      - リリース前のバージョンのインストールを許可するかです。
     required: false
     default: "no"
     version_added: "1.6"
@@ -77,13 +77,13 @@ author: Johan Wiren
 '''
 
 EXAMPLES = '''
-# Installs version 1.0 of vagrant.
+# vagrant 1.0 をインストール
 - gem: name=vagrant version=1.0 state=present
 
-# Installs latest available version of rake.
+# rake の最新バージョンをインストール
 - gem: name=rake state=latest
 
-# Installs rake version 1.0 from a local gem on disk.
+# rake のバージョン 1.0 をローカルの gem からインストール
 - gem: name=rake gem_source=/path/to/gems/rake-1.0.gem state=present
 '''
 
