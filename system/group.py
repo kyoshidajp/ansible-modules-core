@@ -23,36 +23,36 @@ DOCUMENTATION = '''
 module: group
 author: Stephen Fromm
 version_added: "0.0.2"
-short_description: Add or remove groups
+short_description: グループを追加または削除する
 requirements: [ groupadd, groupdel, groupmod ]
 description:
-    - Manage presence of groups on a host.
+    - ホストのグループの存在を管理します。
 options:
     name:
         required: true
         description:
-            - Name of the group to manage.
+            - 管理するグループ名です。
     gid:
         required: false
         description:
-            - Optional I(GID) to set for the group.
+            - グループに指定するオプションの I(GID) です。
     state:
         required: false
         default: "present"
         choices: [ present, absent ]
         description:
-            - Whether the group should be present or not on the remote host.
+            - グループがリモートホスト上に存在する、またはしないです。
     system:
         required: false
         default: "no"
         choices: [ "yes", "no" ]
         description:
-            - If I(yes), indicates that the group created is a system group.
+            - I(yes) はシステムグループになります。
 
 '''
 
 EXAMPLES = '''
-# Example group command from Ansible Playbooks
+# Ansible Playbooks でのグループコマンドの例
 - group: name=somegroup state=present
 '''
 
@@ -150,7 +150,7 @@ class SunOS(Group):
 
     This overrides the following methods from the generic class:-
         - group_add()
-    """ 
+    """
 
     platform = 'SunOS'
     distribution = None
