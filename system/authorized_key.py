@@ -24,76 +24,71 @@ along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 DOCUMENTATION = '''
 ---
 module: authorized_key
-short_description: Adds or removes an SSH authorized key
+short_description: SSH authorized key を追加または削除する
 description:
-     - Adds or removes an SSH authorized key for a user from a remote host.
+     - リモートホストから SSH authorized key を追加または削除します。
 version_added: "0.5"
 options:
   user:
     description:
-      - The username on the remote host whose authorized_keys file will be modified
+      - authorized_keys ファイルを編集するリモートホスト上のユーザ名です。
     required: true
     default: null
     aliases: []
   key:
     description:
-      - The SSH public key, as a string
+      - SSH 公開鍵の文字列です。
     required: true
     default: null
   path:
     description:
-      - Alternate path to the authorized_keys file
+      - authorized_keys ファイルのパスです。
     required: false
     default: "(homedir)+/.ssh/authorized_keys"
     version_added: "1.2"
   manage_dir:
     description:
-      - Whether this module should manage the directory of the authorized key file.  If
-        set, the module will create the directory, as well as set the owner and permissions
-        of an existing directory. Be sure to
-        set C(manage_dir=no) if you are using an alternate directory for
-        authorized_keys, as set with C(path), since you could lock yourself out of
-        SSH access. See the example below.
+      - authorized key ファイルのディレクトリを管理するかどうかです。"yes" であれば、所有者とパーミッションを設定したディレクトリを作成します。C(path) を指定して authorized_keys のディレクトリを変更している場合、必ず C(manage_dir=no) を指定します。下のサンプルを参考にしてください。
     required: false
     choices: [ "yes", "no" ]
     default: "yes"
     version_added: "1.2"
   state:
     description:
-      - Whether the given key (with the given key_options) should or should not be in the file
+      - (key_options で指定された)key がファイルに存在するまたはしないを指定します。
     required: false
     choices: [ "present", "absent" ]
     default: "present"
   key_options:
     description:
-      - A string of ssh key options to be prepended to the key in the authorized_keys file
+      - authorized_keys ファイルに指定する ssh key オプションの文字列です。
     required: false
     default: null
     version_added: "1.4"
 description:
-    - "Adds or removes authorized keys for particular user accounts"
+    - "特定ユーザの atuhorized keys を追加または削除します。"
 author: Brad Olson
 '''
 
 EXAMPLES = '''
-# Example using key data from a local file on the management machine
+# 管理マシン上のローカルファイルから key データを使用する例
 - authorized_key: user=charlie key="{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}"
 
-# Using alternate directory locations:
+# authorized_key のパスを指定
 - authorized_key: user=charlie
                   key="{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}"
                   path='/etc/ssh/authorized_keys/charlie'
                   manage_dir=no
 
-# Using with_file
-- name: Set up authorized_keys for the deploy user
+# with_file を使用して指定
+- name: ユーザ deploy の authorized_keys をセットアップ
   authorized_key: user=deploy
                   key="{{ item }}"
   with_file:
     - public_keys/doe-jane
     - public_keys/doe-john
 
-# Using key_options:
+# key_options を使用して指定
 - authorized_key: user=charlie
                   key="{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}"
                   key_options='no-port-forwarding,host="10.0.1.1"'
@@ -122,7 +117,7 @@ import shlex
 class keydict(dict):
 
     """ a dictionary that maintains the order of keys as they are added """
-    
+
     # http://stackoverflow.com/questions/2328235/pythonextend-the-dict-class
 
     def __init__(self, *args, **kw):
@@ -130,7 +125,7 @@ class keydict(dict):
         self.itemlist = super(keydict,self).keys()
     def __setitem__(self, key, value):
         self.itemlist.append(key)
-        super(keydict,self).__setitem__(key, value)        
+        super(keydict,self).__setitem__(key, value)
     def __iter__(self):
         return iter(self.itemlist)
     def keys(self):
@@ -138,7 +133,7 @@ class keydict(dict):
     def values(self):
         return [self[key] for key in self]
     def itervalues(self):
-        return (self[key] for key in self)    
+        return (self[key] for key in self)
 
 def keyfile(module, user, write=False, path=None, manage_dir=True):
     """
@@ -198,8 +193,8 @@ def keyfile(module, user, write=False, path=None, manage_dir=True):
     return keysfile
 
 def parseoptions(module, options):
-    ''' 
-    reads a string containing ssh-key options 
+    '''
+    reads a string containing ssh-key options
     and returns a dictionary of those options
     '''
     options_dict = keydict() #ordered dict
@@ -230,7 +225,7 @@ def parsekey(module, raw_key):
         'ssh-ed25519',
         'ecdsa-sha2-nistp256',
         'ecdsa-sha2-nistp384',
-        'ecdsa-sha2-nistp521', 
+        'ecdsa-sha2-nistp521',
         'ssh-dss',
         'ssh-rsa',
     ]
