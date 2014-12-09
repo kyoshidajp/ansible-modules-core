@@ -23,57 +23,51 @@
 DOCUMENTATION = '''
 ---
 module: mount
-short_description: Control active and configured mount points
+short_description: マウントポイントの有効と設定を管理する
 description:
-     - This module controls active and configured mount points in C(/etc/fstab).
+     - C(/etc/fstab) のマウントポイントについて有効と設定を管理します。
 version_added: "0.6"
 options:
   name:
     description:
-      - "path to the mount point, eg: C(/mnt/files)"
+      - "マウントポイントのパスです。 例: C(/mnt/files) "
     required: true
     default: null
     aliases: []
   src:
     description:
-      - device to be mounted on I(name).
+      - I(name) でマウントするデバイスです。
     required: true
     default: null
   fstype:
     description:
-      - file-system type
+      - ファイルシステムの種類です。
     required: true
     default: null
   opts:
     description:
-      - mount options (see fstab(8))
+      - マウントオプションです。（fstab(8) を参照）
     required: false
     default: null
   dump:
     description:
-      - dump (see fstab(8))
+      - dump です。（fstab(8) を参照）
     required: false
     default: null
   passno:
     description:
-      - passno (see fstab(8))
+      - passno です。(fstab(8) を参照)
     required: false
     default: null
   state:
     description:
-      - If C(mounted) or C(unmounted), the device will be actively mounted or unmounted
-        as needed and appropriately configured in I(fstab). 
-        C(absent) and C(present) only deal with
-        I(fstab) but will not affect current mounting. If specifying C(mounted) and the mount
-        point is not present, the mount point will be created. Similarly, specifying C(absent)        will remove the mount point directory.
+      - C(mounted) または C(unmounted) は I(fstab) のデバイスを必要に応じて適切にマウントまたはアンマウントします。C(absent) と C(present) は I(fstab) の変更を行うだけで、現在のマウントには影響しません。C(mounted) を指定して、マウントポイントがなければ作成されます。これに似て、C(absent) はマウントポイントディレクトリを削除します。
     required: true
     choices: [ "present", "absent", "mounted", "unmounted" ]
     default: null
   fstab:
     description:
-      - file to use instead of C(/etc/fstab). You shouldn't use that option
-        unless you really know what you are doing. This might be useful if
-        you need to configure mountpoints in a chroot environment.
+      - C(/etc/fstab) の代わりに使用するファイルです。動作を把握していなければ指定すべきではありません。chroot 環境でマウントポイントを設定する必要がある際に有効かもしれません。
     required: false
     default: /etc/fstab
 
@@ -82,13 +76,13 @@ requirements: []
 author: Seth Vidal
 '''
 EXAMPLES = '''
-# Mount DVD read-only
+# DVD を読み取り専用でマウント
 - mount: name=/mnt/dvd src=/dev/sr0 fstype=iso9660 opts=ro state=present
 
-# Mount up device by label
+# ラベルでデバイスを有効化
 - mount: name=/srv/disk src='LABEL=SOME_LABEL' fstype=ext4 state=present
 
-# Mount up device by UUID
+# UUID でデバイスを有効化
 - mount: name=/home src='UUID=b3e48f45-f933-4c8e-a700-22a159ec9077' fstype=xfs opts=noatime state=present
 '''
 
