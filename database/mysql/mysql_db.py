@@ -22,79 +22,75 @@
 DOCUMENTATION = '''
 ---
 module: mysql_db
-short_description: Add or remove MySQL databases from a remote host.
+short_description: リモートホストから MySQL データベースを追加または削除する
 description:
-   - Add or remove MySQL databases from a remote host.
+   - リモートホストから MySQL データベースを追加または削除します。
 version_added: "0.6"
 options:
   name:
     description:
-      - name of the database to add or remove
+      - 追加または削除するデータベースの名前です。
     required: true
     default: null
     aliases: [ db ]
   login_user:
     description:
-      - The username used to authenticate with
+      - 認証されるユーザ名です。
     required: false
     default: null
   login_password:
     description:
-      - The password used to authenticate with
+      - 認証されるパスワードです。
     required: false
     default: null
   login_host:
     description:
-      - Host running the database
+      - データベースのホスト名です。
     required: false
     default: localhost
   login_port:
     description:
-      - Port of the MySQL server. Requires login_host be defined as other then localhost if login_port is used
+      - MySQL サーバのポートです。すでに他のサービスでポートが使用されていれば、指定して変更する必要があります。
     required: false
     default: 3306
   login_unix_socket:
     description:
-      - The path to a Unix domain socket for local connections
+      - ローカル接続のための Unix ドメインソケットへのパスです。
     required: false
     default: null
   state:
     description:
-      - The database state
+      - データベースの状態です。
     required: false
     default: present
     choices: [ "present", "absent", "dump", "import" ]
   collation:
     description:
-      - Collation mode
+      - Collation モードです。
     required: false
     default: null
   encoding:
     description:
-      - Encoding mode
+      - Encoding モードです。
     required: false
     default: null
   target:
     description:
-      - Location, on the remote host, of the dump file to read from or write to. Uncompressed SQL
-        files (C(.sql)) as well as bzip2 (C(.bz2)) and gzip (C(.gz)) compressed files are supported.
+      - ダンプファイルが読まれたり、書き込まれたりするリモートホストの場所です。非圧縮の SQL ファイル(C(.sql))、圧縮された bzip2 (C(.bz2)) や gzip (C(.gz)) ファイルをサポートしています。
     required: false
 notes:
-   - Requires the MySQLdb Python package on the remote host. For Ubuntu, this
-     is as easy as apt-get install python-mysqldb. (See M(apt).)
-   - Both I(login_password) and I(login_user) are required when you are
-     passing credentials. If none are present, the module will attempt to read
-     the credentials from C(~/.my.cnf), and finally fall back to using the MySQL
-     default login of C(root) with no password.
+   - リモートホストには MySQLdb Python パッケージがインストールされている必要があります。Ubuntuは簡単で、apt-get install python-mysqldb になります。(M(apt) を参照)
+   - I(login_password) と I(login_user) は認証で必要です。none は、 C(~/.my.cnf) から資格情報を取得しようとして、パスワード無しでデフォルトの C(root) となりフォールバックします。
 requirements: [ ConfigParser ]
 author: Mark Theunissen
 '''
 
 EXAMPLES = '''
-# Create a new database with name 'bobdata'
+# データベース名 'bobdata' を作成する
 - mysql_db: name=bobdata state=present
 
-# Copy database dump file to remote host and restore it to database 'my_db'
+# データベースのダンプファイルをリモートホストにコピーして
+# データベース名 'my_db' でリストアする
 - copy: src=dump.sql.bz2 dest=/tmp
 - mysql_db: name=my_db state=import target=/tmp/dump.sql.bz2
 '''
@@ -334,8 +330,8 @@ def main():
             except Exception, e:
                 module.fail_json(msg="error deleting database: " + str(e))
         elif state == "dump":
-            rc, stdout, stderr = db_dump(module, login_host, login_user, 
-                                        login_password, db, target, 
+            rc, stdout, stderr = db_dump(module, login_host, login_user,
+                                        login_password, db, target,
                                         port=module.params['login_port'],
                                         socket=module.params['login_unix_socket'])
             if rc != 0:
@@ -343,8 +339,8 @@ def main():
             else:
                 module.exit_json(changed=True, db=db, msg=stdout)
         elif state == "import":
-            rc, stdout, stderr = db_import(module, login_host, login_user, 
-                                        login_password, db, target, 
+            rc, stdout, stderr = db_import(module, login_host, login_user,
+                                        login_password, db, target,
                                         port=module.params['login_port'],
                                         socket=module.params['login_unix_socket'])
             if rc != 0:
