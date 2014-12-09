@@ -26,40 +26,40 @@ DOCUMENTATION = '''
 ---
 module: mysql_variables
 
-short_description: Manage MySQL global variables
+short_description: MySQL のグローバル変数を管理する
 description:
-    - Query / Set MySQL variables
+    - MySQL 変数の問い合わせ、または設定します。
 version_added: 1.3
 options:
     variable:
         description:
-            - Variable name to operate
+            - 操作する変数名です。
         required: True
     value:
         description:
-            - If set, then sets variable value to this
+            - variable にこの値を設定します。
         required: False
     login_user:
         description:
-            - username to connect mysql host, if defined login_password also needed.
+            - login_password が必要な場合、mysql ホストに接続するユーザ名です。
         required: False
     login_password:
         description:
-            - password to connect mysql host, if defined login_user also needed.
+            - login_user が必要な場合、mysql ホストに接続するパスワードです。
         required: False
     login_host:
         description:
-            - mysql host to connect
+            - データベースのホスト名です。
         required: False
     login_unix_socket:
         description:
-            - unix socket to connect mysql server
+            - mysql サーバに接続する Unix ソケットです。
 '''
 EXAMPLES = '''
-# Check for sync_binlog setting
+# sync_binlog を確認する
 - mysql_variables: variable=sync_binlog
 
-# Set read_only variable to 1
+# read_only 変数の値を 1 にする
 - mysql_variables: variable=read_only value=1
 '''
 
