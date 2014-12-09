@@ -21,120 +21,110 @@
 DOCUMENTATION = '''
 ---
 module: mysql_user
-short_description: Adds or removes a user from a MySQL database.
+short_description: MySQL データベースからユーザを追加または削除する
 description:
-   - Adds or removes a user from a MySQL database.
+   - MySQL データベースからユーザを追加または削除します。
 version_added: "0.6"
 options:
   name:
     description:
-      - name of the user (role) to add or remove
+      - 追加または削除するユーザ（ロール）の名前です。
     required: true
     default: null
   password:
     description:
-      - set the user's password
+      - ユーザのパスワードを設定します。
     required: false
     default: null
   host:
     description:
-      - the 'host' part of the MySQL username
+      - MySQL ユーザ名の 'host' 部分です。
     required: false
     default: localhost
   login_user:
     description:
-      - The username used to authenticate with
+      - 認証されるユーザ名です。
     required: false
     default: null
   login_password:
     description:
-      - The password used to authenticate with
+      - 認証されるパスワードです。
     required: false
     default: null
   login_host:
     description:
-      - Host running the database
+      - データベースのホスト名です。
     required: false
     default: localhost
   login_port:
     description:
-      - Port of the MySQL server
+      - MySQL サーバのポートです。
     required: false
     default: 3306
     version_added: '1.4'
   login_unix_socket:
     description:
-      - The path to a Unix domain socket for local connections
+      - ローカル接続のための Unix ドメインソケットへのパスです。
     required: false
     default: null
   priv:
     description:
-      - "MySQL privileges string in the format: C(db.table:priv1,priv2)"
+      - "MySQL の権限情報文字列で、フォーマットは C(db.table:priv1,priv2) です。"
     required: false
     default: null
   append_privs:
     description:
-      - Append the privileges defined by priv to the existing ones for this
-        user instead of overwriting existing ones.
+      - 既存の権限情報を上書きして priv で定義された値にするかどうかです。
     required: false
     choices: [ "yes", "no" ]
     default: "no"
     version_added: "1.4"
   state:
     description:
-      - Whether the user should exist.  When C(absent), removes
+      - ユーザが存在すべきか、しないべきかです。C(absent) はユーザを削除します。
         the user.
     required: false
     default: present
     choices: [ "present", "absent" ]
   check_implicit_admin:
     description:
-      - Check if mysql allows login as root/nopassword before trying supplied credentials.
+      - mysql が認証情報で認証する前に root/nopassword でログインする事を許可するかです。
     required: false
     default: false
     version_added: "1.3"
 notes:
-   - Requires the MySQLdb Python package on the remote host. For Ubuntu, this
-     is as easy as apt-get install python-mysqldb.
-   - Both C(login_password) and C(login_username) are required when you are
-     passing credentials. If none are present, the module will attempt to read
-     the credentials from C(~/.my.cnf), and finally fall back to using the MySQL
-     default login of 'root' with no password.
-   - "MySQL server installs with default login_user of 'root' and no password. To secure this user
-     as part of an idempotent playbook, you must create at least two tasks: the first must change the root user's password,
-     without providing any login_user/login_password details. The second must drop a ~/.my.cnf file containing
-     the new root credentials. Subsequent runs of the playbook will then succeed by reading the new credentials from
-     the file."
+   - リモートホストには MySQLdb Python パッケージがインストールされている必要があります。Ubuntuは簡単で、apt-get install python-mysqldb になります。
+   - I(login_password) と I(login_user) は認証で必要です。none は、 C(~/.my.cnf) から資格情報を取得しようとして、パスワード無しでデフォルトの C(root) となりフォールバックします。
+   - "MySQL サーバはデフォルトの login_user がパスワード無しの 'root' でインストールされます。べき等性を保証する場合、少なくとも2つのタスクが playbook に必要です。1つ目は login_user/login_password の確認を行わないように root ユーザのパスワードを変更するものです。2つ目は新しい root の認証情報を ~/.my.cnf ファイルに含めるものです。その後の playbook 実行ではファイルから新しい認証情報が読み取られて成功するでしょう。"
 
 requirements: [ "ConfigParser", "MySQLdb" ]
 author: Mark Theunissen
 '''
 
 EXAMPLES = """
-# Create database user with name 'bob' and password '12345' with all database privileges
+# データベースを作成し、同時にユーザ 'bob' をパスワード '12345' ですべての権限を持つようにする
 - mysql_user: name=bob password=12345 priv=*.*:ALL state=present
 
-# Creates database user 'bob' and password '12345' with all database privileges and 'WITH GRANT OPTION'
+# データベースを作成し、同時にユーザ 'bob' をパスワード '12345' で権限 'WITH GRANT OPTION' を持つようにする
 - mysql_user: name=bob password=12345 priv=*.*:ALL,GRANT state=present
 
-# Ensure no user named 'sally' exists, also passing in the auth credentials.
+# ユーザ 'sally' が存在しない事を保証する
 - mysql_user: login_user=root login_password=123456 name=sally state=absent
 
 # Specify grants composed of more than one word
 - mysql_user: name=replication password=12345 priv=*.*:"REPLICATION CLIENT" state=present
 
-# Revoke all privileges for user 'bob' and password '12345' 
+# ユーザ 'bob' からすべての権限を除き、パスワードを '12345' にする
 - mysql_user: name=bob password=12345 priv=*.*:USAGE state=present
 
-# Example privileges string format
+# privileges の文字列フォーマット例
 mydb.*:INSERT,UPDATE/anotherdb.*:SELECT/yetanotherdb.*:ALL
 
-# Example using login_unix_socket to connect to server
+# サーバに接続する login_unix_socket を使用した例
 - mysql_user: name=root password=abc123 login_unix_socket=/var/run/mysqld/mysqld.sock
 
-# Example .my.cnf file for setting the root password
-# Note: don't use quotes around the password, because the mysql_user module
-# will include them in the password but the mysql client will not
+# root パスワードを設定するための .my.cnf ファイルの例
+# 注意: client では mysql_user モジュールでは含むクォートでパスワードを囲まないでください。
 
 [client]
 user=root
@@ -367,7 +357,7 @@ def _safe_cnf_load(config, path):
             data['password'] = line.split('=', 1)[1].strip()
     f.close()
 
-    # write out a new cnf file with only user/pass   
+    # write out a new cnf file with only user/pass
     fh, newpath = tempfile.mkstemp(prefix=path + '.')
     f = open(newpath, 'wb')
     f.write('[client]\n')
