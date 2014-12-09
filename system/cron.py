@@ -32,85 +32,80 @@
 DOCUMENTATION = """
 ---
 module: cron
-short_description: Manage cron.d and crontab entries.
+short_description: cron.d と crontab エントリを管理する
 description:
-  - Use this module to manage crontab entries. This module allows you to create named
-    crontab entries, update, or delete them.
-  - 'The module includes one line with the description of the crontab entry C("#Ansible: <name>")
-    corresponding to the "name" passed to the module, which is used by future ansible/module calls
-    to find/check the state.  The "name" parameter should be unique, and changing the "name" value
-    will result in a new cron task being created (or a different one being removed)'
+  - crontb エントリを管理します。crontab エントリの登録、更新、削除が可能です。
+  - 'The module includes one line with the description of the crontab entry C("#Ansible: <name>") corresponding to the "name" passed to the module, which is used by future ansible/module calls to find/check the state.  "name" パラメータはユニークでなければならず、"name" の値を変更すると新しいタスクが作成（または違うタスクが削除）されます。'
 version_added: "0.9"
 options:
   name:
     description:
-      - Description of a crontab entry.
+      - crontab エントリの記述です。
     default: null
     required: true
   user:
     description:
-      - The specific user whose crontab should be modified.
+      - crontab を修正するユーザです。
     required: false
     default: root
   job:
     description:
-      - The command to execute. Required if state=present.
+      - 実行するコマンドです。state=present の場合必要です。
     required: false
     default: null
   state:
     description:
-      - Whether to ensure the job is present or absent.
+      - ジョブが存在するまたはしないを指定します。
     required: false
     default: present
     choices: [ "present", "absent" ]
   cron_file:
     description:
-      - If specified, uses this file in cron.d instead of an individual user's crontab.
+      - ユーザ別 crontab の代わりに cron.d にある指定されたファイルを使用します。
     required: false
     default: null
   backup:
     description:
-      - If set, create a backup of the crontab before it is modified.
-        The location of the backup is returned in the C(backup) variable by this module.
+      - 設定されていると、修正前に crontab のバックアップを作成します。バックアップの場所は C(backup) 変数の値になります。
     required: false
     default: false
   minute:
     description:
-      - Minute when the job should run ( 0-59, *, */2, etc )
+      - ジョブが実行される分です( 0-59, *, */2, など )。
     required: false
     default: "*"
   hour:
     description:
-      - Hour when the job should run ( 0-23, *, */2, etc )
+      - ジョブが実行される時間です( 0-23, *, */2, など )。
     required: false
     default: "*"
   day:
     description:
-      - Day of the month the job should run ( 1-31, *, */2, etc )
+      - ジョブが実行される日です( 1-31, *, */2, など )。
     required: false
     default: "*"
     aliases: [ "dom" ]
   month:
     description:
-      - Month of the year the job should run ( 1-12, *, */2, etc )
+      - ジョブが実行される年です( 1-12, *, */2, など )。
     required: false
     default: "*"
   weekday:
     description:
-      - Day of the week that the job should run ( 0-6 for Sunday-Saturday, *, etc )
+      - ジョブが実行される曜日です( 0-6 for Sunday-Saturday, *, など )。
     required: false
     default: "*"
     aliases: [ "dow" ]
   reboot:
     description:
-      - If the job should be run at reboot. This option is deprecated. Users should use special_time.
+      - 再起動時にジョブを実行するかどうかです。このオプションは依存関係があります。ユーザは special_time を使用すべきです。
     version_added: "1.0"
     required: false
     default: "no"
     choices: [ "yes", "no" ]
   special_time:
     description:
-      - Special time specification nickname.
+      - 特別な時間記述です。
     version_added: "1.3"
     required: false
     default: null
@@ -122,23 +117,22 @@ updates: [ 'Mike Grozak', 'Patrick Callahan' ]
 """
 
 EXAMPLES = '''
-# Ensure a job that runs at 2 and 5 exists.
-# Creates an entry like "0 5,2 * * ls -alh > /dev/null"
+# 2時と5時に存在をチェックするジョブ
+# "0 5,2 * * ls -alh > /dev/null" の様な指定
 - cron: name="check dirs" minute="0" hour="5,2" job="ls -alh > /dev/null"
 
-# Ensure an old job is no longer present. Removes any job that is prefixed
-# by "#Ansible: an old job" from the crontab
+# crontab から "#Ansible: an old job" ジョブを削除
 - cron: name="an old job" state=absent
 
-# Creates an entry like "@reboot /some/job.sh"
+# "@reboot /some/job.sh" の様なエントリを作成
 - cron: name="a job for reboot" special_time=reboot job="/some/job.sh"
 
-# Creates a cron file under /etc/cron.d
+# /etc/cron.d 以下に cron ファイルを作成
 - cron: name="yum autoupdate" weekday="2" minute=0 hour=12
         user="root" job="YUMINTERACTIVE=0 /usr/sbin/yum-autoupdate"
         cron_file=ansible_yum-autoupdate
 
-# Removes a cron file from under /etc/cron.d
+# /etc/cron.d 以下の cron ファイルを削除する
 - cron: cron_file=ansible_yum-autoupdate state=absent
 '''
 
@@ -521,4 +515,3 @@ def main():
 from ansible.module_utils.basic import *
 
 main()
-
